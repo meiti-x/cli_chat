@@ -1,0 +1,15 @@
+[build]
+  # The command to run your Go application
+  cmd = "go run cmd/app/main.go  -c local.config.yml"
+
+  # Working directory (leave empty to use the current directory)
+  bin = "./tmp/main"
+
+  # Path to watch for file changes
+  watch_dir = "."
+  exclude_dir = ["tmp", "vendor", "node_modules"]
+
+[log]
+  # Air log settings
+  level = "debug"
+  color = true

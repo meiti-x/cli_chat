@@ -1,0 +1,12 @@
+server:
+  host: "http://localhost"
+  port: 8080
+
+
+nats:
+  ConnString: "nats://127.0.0.1:4222"
+
+logger:
+  level: "info"
+  encoding: "json"
+  path: "./logs/sample-log.log"

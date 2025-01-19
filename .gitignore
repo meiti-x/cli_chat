@@ -1,0 +1,7 @@
+.idea
+*.log
+.vscode
+build
+config.yml
+local.config.yml
+tmp
