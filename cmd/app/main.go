@@ -114,7 +114,7 @@ func main() {
 				msg := string(message)
 
 				if msg == "#users" {
-					handleUsersCommandRedis(conn, rdb)
+					handleUsersCommandRedis(conn, rdb, onlineUsersKey)
 					continue
 				}
 
@@ -200,8 +200,8 @@ func main() {
 }
 
 // handleUsersCommandRedis sends the list of online users from Redis
-func handleUsersCommandRedis(conn *websocket.Conn, rdb *redis.Client) {
-	users, err := rdb.SMembers(ctx, "online_users").Result()
+func handleUsersCommandRedis(conn *websocket.Conn, rdb *redis.Client, subj string) {
+	users, err := rdb.SMembers(ctx, subj).Result()
 	if err != nil {
 		log.Println(app_errors.ErrRedisOperationFailed, err)
 		return

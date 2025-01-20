@@ -26,7 +26,7 @@ func SendWelcomeMessage(clientIP string, conn *websocket.Conn) error {
 
 func SendJoinRoomMessage(msg map[string]interface{}, nc *nats.Conn, subj string) error {
 	joinMessageJSON, _ := json.Marshal(msg)
-	if err := nc.Publish("chatroom", joinMessageJSON); err != nil {
+	if err := nc.Publish(fmt.Sprintf("chatroom.%s", subj), joinMessageJSON); err != nil {
 		return err
 	}
 	return nil
@@ -34,7 +34,7 @@ func SendJoinRoomMessage(msg map[string]interface{}, nc *nats.Conn, subj string)
 
 func SendLeaveRoomMessage(msg map[string]interface{}, nc *nats.Conn, subj string) error {
 	leaveMessageJSON, _ := json.Marshal(msg)
-	if err := nc.Publish("chatroom", leaveMessageJSON); err != nil {
+	if err := nc.Publish(fmt.Sprintf("chatroom.%s", subj), leaveMessageJSON); err != nil {
 		return err
 	}
 	return nil
