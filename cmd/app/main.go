@@ -14,6 +14,7 @@ import (
 	redis2 "github.com/meiti-x/snapp_chal/internal/redis"
 	"github.com/meiti-x/snapp_chal/pkg/app_errors"
 	"github.com/meiti-x/snapp_chal/pkg/events"
+	"github.com/meiti-x/snapp_chal/pkg/logger"
 	"github.com/meiti-x/snapp_chal/socket"
 	"github.com/nats-io/nats.go"
 	"log"
@@ -36,8 +37,11 @@ const ChatroomNameQuery = "chatroom"
 // TODO: add documents
 // TODO: add git hook
 // TODO: change structure of project
-// TODO: add more commands
+// TODO: add more commands(my message)
+// TODO: clear online users in redis on server stop
 // TODO: rename project
+// TODO add logger
+
 func main() {
 	configPath := flag.String("c", "config.yml", "Path to the configuration file")
 	flag.Parse()
@@ -47,6 +51,10 @@ func main() {
 		log.Fatalln(fmt.Errorf("load config error: %w", err))
 	}
 
+	lo := logger.NewAppLogger(conf)
+	lo.InitLogger(conf.Logger.Path)
+
+	lo.Error("لاگ کوچکنرززززز:", err)
 	nc, err := nats2.MustInitNats(conf)
 	if err != nil {
 		panic(app_errors.ErrNatsInit)
@@ -134,7 +142,6 @@ func main() {
 			}
 
 			// on User disconnected
-			// FIXME: leave msg doesnt show properly
 			if err := rdb.SRem(ctx, onlineUsersKey, clientIP).Err(); err != nil {
 				log.Println(app_errors.ErrRedisOperationFailed, err)
 				return
