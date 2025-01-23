@@ -1,8 +1,17 @@
 package repository
 
-import "github.com/meiti-x/snapp_task/internal/models"
+import (
+	"context"
+	"github.com/meiti-x/snapp_task/internal/models"
+)
 
 type UserRepository interface {
-	GetUser(user *models.Username) (*models.User, error)
-	CreateUser(user *models.User) (*models.User, error)
+	GetUserByUsername(user *models.Username) (*models.User, error)
+	CreateUser(user *models.User) error
+}
+
+type UserRedisRepository interface {
+	AddUserToChatroomSet(ctx context.Context, onlineUsersKey string, clientIP string) error
+	RemoveUserFromChatroomSet(ctx context.Context, onlineUsersKey string, clientIP string) error
+	GetTotalUserInChatroom(ctx context.Context, onlineUsersKey string, clientIP string) error
 }

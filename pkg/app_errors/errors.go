@@ -17,14 +17,6 @@ var (
 	ErrNATSReceivedFailed     = errors.New("error receiving NATS message")
 )
 
-// Redis errors
-var (
-	ErrRedisClose            = errors.New("failed to close Redis")
-	ErrRedisInit             = errors.New("failed to initialize Redis connection")
-	ErrRedisConnectionFailed = errors.New("failed to connect to Redis")
-	ErrRedisOperationFailed  = errors.New("redis operation failed")
-)
-
 // Common errors
 var (
 	InvalidCommand        = errors.New("invalid command received")
@@ -33,5 +25,6 @@ var (
 	ErrSendLeaveMessage   = errors.New("error send leave message")
 	ErrSendOnlineUsers    = errors.New("error send leave message")
 	ErrHttpStart          = errors.New("HTTP server error")
+	ErrInitDB             = errors.New("HTTP server error")
 	ErrParseJSON          = errors.New("error parsing JSON message")
 )

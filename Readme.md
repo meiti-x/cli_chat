@@ -5,3 +5,6 @@
 4. get all user chatroom messages by add adding command #my_messages
 5. its better to use viper to cobra wo work with cli
 6. add loki and grafana to aggregate and visulize logs
+7. add rate limmiting for publish message in nats
+8. add custome field and traceid for logger
+9. remove user on redis on interuption or scan all user on login

@@ -5,9 +5,13 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/meiti-x/snapp_task/config"
 	"github.com/meiti-x/snapp_task/internal/models"
+	"github.com/meiti-x/snapp_task/pkg/adapters/storage"
+	"github.com/meiti-x/snapp_task/pkg/app_errors"
 	db2 "github.com/meiti-x/snapp_task/pkg/db"
-	"gorm.io/gorm"
+	"github.com/meiti-x/snapp_task/pkg/logger"
+	"github.com/meiti-x/snapp_task/usecase"
 	"log"
 	"os"
 	"os/signal"
@@ -15,18 +19,29 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
 	serverURL := flag.String("server", "ws://localhost:8080/ws", "WebSocket server URL")
 	chatroom := flag.String("chatroom", "general", "Chatroom to join")
+	configPath := flag.String("c", "config.yml", "Path to the configuration file")
 	flag.Parse()
 
+	conf, err := config.LoadConfig(*configPath)
+
+	logger := logger.NewAppLogger(conf)
+	logger.InitLogger(conf.Logger.Path)
+
 	db, err := db2.InitDB()
+	if err != nil {
+		logger.Error(app_errors.ErrInitDB)
+	}
+	userRepo := storage.NewUserRepository(db)
+	messageRepo := storage.NewMessageRepository(db)
 
 	// User authentication
-	authenticatedUser := authenticateUser(db)
+	fmt.Println("Welcome! Please log in or register:")
+	authenticatedUser := usecase.AuthenticateUser(userRepo)
 
 	connURL := fmt.Sprintf("%s?chatroom=%s", *serverURL, *chatroom)
 
@@ -90,7 +105,7 @@ func main() {
 				Content:   messageContent,
 				CreatedAt: time.Now(),
 			}
-			if err := db.Create(&chatMessage).Error; err != nil {
+			if err := messageRepo.CreateMessage(chatMessage); err != nil {
 				log.Printf("Failed to save message to database: %v", err)
 				continue
 			}
@@ -109,86 +124,10 @@ func main() {
 			fmt.Println("\nDisconnecting...")
 			return
 		case msg := <-messageChan:
+			if msg == "" || len(msg) == 0 {
+				continue
+			}
 			fmt.Printf("Server: %s\n", msg)
 		}
 	}
-}
-
-// authenticateUser handles user login and registration.
-func authenticateUser(db *gorm.DB) string {
-	fmt.Println("Welcome! Please log in or register:")
-
-	reader := bufio.NewReader(os.Stdin)
-	for {
-		fmt.Println("1. Login")
-		fmt.Println("2. Register")
-		fmt.Print("Choose an option: ")
-
-		choice, _ := reader.ReadString('\n')
-		choice = choice[:len(choice)-1]
-
-		if choice == "1" {
-			return loginUser(db)
-		} else if choice == "2" {
-			return registerUser(db)
-		} else {
-			fmt.Println("Invalid option. Please try again.")
-		}
-	}
-}
-
-// loginUser handles user login.
-func loginUser(db *gorm.DB) string {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter username: ")
-	username, _ := reader.ReadString('\n')
-	username = username[:len(username)-1]
-
-	fmt.Print("Enter password: ")
-	password, _ := reader.ReadString('\n')
-	password = password[:len(password)-1]
-
-	var user *models.User
-	result := db.Where("username = ?", username).First(&user)
-	if result.Error != nil {
-		fmt.Println("User not found. Please register.")
-		return authenticateUser(db)
-	}
-
-	// Compare hashed password
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		fmt.Println("Invalid password. Please try again.")
-		return authenticateUser(db)
-	}
-
-	fmt.Println("Login successful!")
-	return username
-}
-
-// registerUser handles new user registration.
-func registerUser(db *gorm.DB) string {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Enter username: ")
-	username, _ := reader.ReadString('\n')
-	username = username[:len(username)-1]
-
-	fmt.Print("Enter password: ")
-	password, _ := reader.ReadString('\n')
-	password = password[:len(password)-1]
-
-	// Hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		log.Fatalf("Failed to hash password: %v", err)
-	}
-
-	// Save the user to the database
-	user := models.User{Username: username, Password: string(hashedPassword)}
-	if err := db.Create(&user).Error; err != nil {
-		fmt.Printf("Failed to register user: %v\n", err)
-		return authenticateUser(db)
-	}
-
-	fmt.Println("Registration successful!")
-	return username
 }

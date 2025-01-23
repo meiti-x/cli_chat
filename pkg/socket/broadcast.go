@@ -4,15 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
+	c "github.com/meiti-x/snapp_task/pkg/cache"
 	"log"
 )
 
-func BroadcastRedisUsers(rdb *redis.Client, ws *websocket.Conn, onlineUsersKey string, message map[string]interface{}) error {
+func BroadcastRedisUsers(rdb c.Provider, ws *websocket.Conn, onlineUsersKey string, message map[string]interface{}) error {
 	ctx := context.Background()
 
-	onlineUsers, err := rdb.SMembers(ctx, onlineUsersKey).Result()
+	onlineUsers, err := rdb.GetSetMembers(ctx, onlineUsersKey)
 	fmt.Println(onlineUsers)
 	if err != nil {
 		return err
