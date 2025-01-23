@@ -9,7 +9,6 @@ import (
 	"log"
 )
 
-// FIXME i get one ws for all users
 func BroadcastRedisUsers(rdb *redis.Client, ws *websocket.Conn, onlineUsersKey string, message map[string]interface{}) error {
 	ctx := context.Background()
 

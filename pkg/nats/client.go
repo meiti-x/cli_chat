@@ -1,8 +1,8 @@
 package nats
 
 import (
-	"github.com/meiti-x/snapp_chal/config"
-	"github.com/meiti-x/snapp_chal/pkg/app_errors"
+	"github.com/meiti-x/snapp_task/config"
+	"github.com/meiti-x/snapp_task/pkg/app_errors"
 	"github.com/nats-io/nats.go"
 	"log"
 )

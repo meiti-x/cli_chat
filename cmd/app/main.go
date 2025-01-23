@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
-	"github.com/meiti-x/snapp_chal/config"
-	"github.com/meiti-x/snapp_chal/internal/chatroom"
-	nats2 "github.com/meiti-x/snapp_chal/internal/nats"
-	redis2 "github.com/meiti-x/snapp_chal/internal/redis"
-	"github.com/meiti-x/snapp_chal/pkg/app_errors"
-	"github.com/meiti-x/snapp_chal/pkg/events"
-	"github.com/meiti-x/snapp_chal/pkg/logger"
-	"github.com/meiti-x/snapp_chal/socket"
+	"github.com/meiti-x/snapp_task/config"
+	"github.com/meiti-x/snapp_task/internal/chatroom"
+	"github.com/meiti-x/snapp_task/pkg/app_errors"
+	"github.com/meiti-x/snapp_task/pkg/events"
+	"github.com/meiti-x/snapp_task/pkg/logger"
+	nats2 "github.com/meiti-x/snapp_task/pkg/nats"
+	redis2 "github.com/meiti-x/snapp_task/pkg/redis"
+	"github.com/meiti-x/snapp_task/socket"
 	"github.com/nats-io/nats.go"
 	"log"
 	"net"
@@ -33,15 +33,10 @@ var (
 
 const ChatroomNameQuery = "chatroom"
 
-// TODO: dockerize project
 // TODO: add documents
 // TODO: add git hook
-// TODO: change structure of project
 // TODO: add more commands(my message)
 // TODO: clear online users in redis on server stop
-// TODO: rename project
-// TODO add logger
-
 func main() {
 	configPath := flag.String("c", "config.yml", "Path to the configuration file")
 	flag.Parse()
@@ -69,7 +64,6 @@ func main() {
 		}
 	}(rdb)
 
-	// TODO: add simple logger pkg
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {

@@ -2,7 +2,7 @@ package redis
 
 import (
 	"github.com/go-redis/redis/v8"
-	"github.com/meiti-x/snapp_chal/config"
+	"github.com/meiti-x/snapp_task/config"
 )
 
 func MustInitRedis(conf *config.Config) *redis.Client {
