@@ -4,4 +4,6 @@
 build
 config.yml
 local.config.yml
+test.config.yml
 tmp
+test-docker-compose.yml
