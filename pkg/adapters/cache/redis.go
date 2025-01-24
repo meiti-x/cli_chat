@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/meiti-x/snapp_task/config"
 	c "github.com/meiti-x/snapp_task/pkg/cache"
@@ -14,16 +15,21 @@ type redisCacheClient struct {
 	client *redis.Client
 }
 
-func NewRedisCache(conf *config.Config) c.Provider {
+func NewRedisCache(conf *config.Config) (c.Provider, error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     conf.Redis.Host,
 		Password: conf.Redis.Password,
 		DB:       conf.Redis.DB,
 	})
 
+	_, err := rdb.Ping(context.Background()).Result()
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to Redis: %v", err)
+	}
+
 	return &redisCacheClient{
 		client: rdb,
-	}
+	}, nil
 }
 
 func (r *redisCacheClient) AddSetMember(ctx context.Context, key string, value string) error {

@@ -4,9 +4,16 @@ server:
 
 
 nats:
-  ConnString: "nats://127.0.0.1:4222"
+  ConnString: "nats://nats:4222"
 
 logger:
   level: "info"
   encoding: "json"
-  path: "./logs/sample-log.log"
+  path: "sample-log.log"
+
+database:
+  host: "localhost"
+  user: "postgres"
+  pass: "postgres"
+  port: 5432
+  name: "my_db"

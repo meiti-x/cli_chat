@@ -20,6 +20,14 @@ type Nats struct {
 	ConnString string
 }
 
+type Database struct {
+	Host string
+	Port int
+	User string
+	Pass string
+	Name string
+}
+
 type Redis struct {
 	Host     string
 	Password string
@@ -31,6 +39,7 @@ type Config struct {
 	Nats
 	Redis
 	Logger
+	Database
 }
 
 func LoadConfig(configPath string) (*Config, error) {

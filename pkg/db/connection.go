@@ -1,21 +1,21 @@
 package db
 
 import (
+	"fmt"
+	"github.com/meiti-x/snapp_task/config"
 	"github.com/meiti-x/snapp_task/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
 )
 
-// initDB initializes the PostgreSQL database and GORM.
-func InitDB() (*gorm.DB, error) {
-	dsn := "host=localhost user=postgres password=postgres dbname=chatroom_db port=5432 sslmode=disable"
-	//var database *gorm.DB
-
+// InitDB initializes the PostgreSQL database and GORM.
+func InitDB(conf *config.Config) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", conf.Database.Host, conf.Database.User, conf.Database.Pass, conf.Database.Name, conf.Database.Port)
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, err
 		log.Fatalf("Failed to connect to database: %v", err)
+		return nil, err
 	}
 
 	// Auto-migrate the User and Message models

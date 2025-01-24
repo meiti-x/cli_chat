@@ -5,15 +5,18 @@ import (
 	"github.com/meiti-x/snapp_task/pkg/adapters/cache"
 	"github.com/meiti-x/snapp_task/pkg/app_errors"
 	c "github.com/meiti-x/snapp_task/pkg/cache"
+	db2 "github.com/meiti-x/snapp_task/pkg/db"
 	"github.com/meiti-x/snapp_task/pkg/logger"
 	nats2 "github.com/meiti-x/snapp_task/pkg/nats"
 	"github.com/nats-io/nats.go"
+	"gorm.io/gorm"
 )
 
 type Server struct {
-	logger *logger.AppLogger
-	nats   *nats.Conn
-	rdb    c.Provider
+	Logger *logger.AppLogger
+	Nats   *nats.Conn
+	Rdb    c.Provider
+	Db     *gorm.DB
 }
 
 func Setup(conf *config.Config) *Server {
@@ -25,11 +28,21 @@ func Setup(conf *config.Config) *Server {
 		lo.DPanic(app_errors.ErrNatsInit)
 	}
 
-	rdb := cache.NewRedisCache(conf)
+	rdb, err := cache.NewRedisCache(conf)
+	if err != nil {
+		lo.DPanic("cant init redis")
+	}
+
+	db, err := db2.InitDB(conf)
+	if err != nil {
+		lo.Error(app_errors.ErrInitDB)
+		panic(app_errors.ErrInitDB)
+	}
 
 	return &Server{
-		rdb:    rdb,
-		nats:   nc,
-		logger: lo,
+		Logger: lo,
+		Nats:   nc,
+		Rdb:    rdb,
+		Db:     db,
 	}
 }

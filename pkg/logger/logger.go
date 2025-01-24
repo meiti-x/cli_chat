@@ -58,22 +58,6 @@ func (l *AppLogger) getLoggerLevel(cfg *config.Config) zapcore.Level {
 	return level
 }
 
-func (l *AppLogger) InitCustomLogger(appLogFilePath, sysLogFilePath string) {
-	customCfg := zapcore.EncoderConfig{
-		MessageKey: "MESSAGE",
-		TimeKey:    "TIME",
-		EncodeTime: zapcore.ISO8601TimeEncoder,
-		// LevelKey:   "LEVEL",
-		// CallerKey:     "caller",
-		// EncodeLevel:   zapcore.CapitalLevelEncoder,
-		// EncodeCaller:  zapcore.ShortCallerEncoder,
-		// NameKey:       "NAME",
-		// StacktraceKey: "stacktrace",
-	}
-
-	l.InitLogger(appLogFilePath, customCfg)
-}
-
 // InitLogger initializes the main and system loggers
 func (l *AppLogger) InitLogger(appLogFilePath string, customEncoderCfg ...zapcore.EncoderConfig) {
 	logLevel := l.getLoggerLevel(l.cfg)

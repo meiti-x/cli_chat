@@ -25,6 +25,6 @@ var (
 	ErrSendLeaveMessage   = errors.New("error send leave message")
 	ErrSendOnlineUsers    = errors.New("error send leave message")
 	ErrHttpStart          = errors.New("HTTP server error")
-	ErrInitDB             = errors.New("HTTP server error")
+	ErrInitDB             = errors.New("error init db")
 	ErrParseJSON          = errors.New("error parsing JSON message")
 )

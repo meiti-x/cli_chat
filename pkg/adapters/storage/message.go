@@ -12,7 +12,6 @@ type messageRepository struct {
 }
 
 func (r *messageRepository) CreateMessage(message *models.Message) error {
-	fmt.Println("CreateMessage")
 	if err := r.db.Create(&message).Error; err != nil {
 		return err
 	}

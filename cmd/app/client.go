@@ -5,25 +5,22 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"github.com/meiti-x/snapp_task/config"
-	"github.com/meiti-x/snapp_task/internal/models"
-	"github.com/meiti-x/snapp_task/pkg/adapters/storage"
-	"github.com/meiti-x/snapp_task/pkg/app_errors"
-	db2 "github.com/meiti-x/snapp_task/pkg/db"
 	"github.com/meiti-x/snapp_task/pkg/logger"
-	"github.com/meiti-x/snapp_task/usecase"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
-	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 func main() {
+	// TODO: remove harcoded values
 	serverURL := flag.String("server", "ws://localhost:8080/ws", "WebSocket server URL")
 	chatroom := flag.String("chatroom", "general", "Chatroom to join")
+	authURL := flag.String("auth", "http://localhost:8080/auth", "Authentication server URL")
 	configPath := flag.String("c", "config.yml", "Path to the configuration file")
 	flag.Parse()
 
@@ -32,16 +29,11 @@ func main() {
 	logger := logger.NewAppLogger(conf)
 	logger.InitLogger(conf.Logger.Path)
 
-	db, err := db2.InitDB()
-	if err != nil {
-		logger.Error(app_errors.ErrInitDB)
+	// Prompt for login or registration
+	if !authenticateUser(*authURL) {
+		log.Fatal("Authentication failed. Exiting.")
+		return
 	}
-	userRepo := storage.NewUserRepository(db)
-	messageRepo := storage.NewMessageRepository(db)
-
-	// User authentication
-	fmt.Println("Welcome! Please log in or register:")
-	authenticatedUser := usecase.AuthenticateUser(userRepo)
 
 	connURL := fmt.Sprintf("%s?chatroom=%s", *serverURL, *chatroom)
 
@@ -51,7 +43,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	fmt.Printf("Connected to chatroom '%s' as '%s'. Type messages or use the '#users' command to see online users.\n", *chatroom, authenticatedUser)
+	fmt.Printf("Connected to chatroom '%s'. Type messages or use the '#users' command to see online users.\n", *chatroom)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
@@ -93,23 +85,6 @@ func main() {
 				continue
 			}
 
-			messageContent, ok := parsedMessage["message"]
-			if !ok {
-				log.Println("Message field not found in input")
-				continue
-			}
-
-			chatMessage := &models.Message{
-				Username:  authenticatedUser,
-				Chatroom:  *chatroom,
-				Content:   messageContent,
-				CreatedAt: time.Now(),
-			}
-			if err := messageRepo.CreateMessage(chatMessage); err != nil {
-				log.Printf("Failed to save message to database: %v", err)
-				continue
-			}
-
 			// Send the original JSON message to the server
 			if err := conn.WriteMessage(websocket.TextMessage, []byte(text)); err != nil {
 				log.Printf("Error sending message: %v", err)
@@ -130,4 +105,92 @@ func main() {
 			fmt.Printf("Server: %s\n", msg)
 		}
 	}
+}
+
+// authenticateUser handles user login or registration.
+func authenticateUser(authURL string) bool {
+	reader := bufio.NewReader(os.Stdin)
+
+	for {
+		fmt.Println("1. Login")
+		fmt.Println("2. Register")
+		fmt.Print("Choose an option: ")
+
+		choice, _ := reader.ReadString('\n')
+		choice = strings.TrimSpace(choice)
+
+		if choice == "1" {
+			return loginUser(authURL)
+		} else if choice == "2" {
+			return registerUser(authURL)
+		} else {
+			fmt.Println("Invalid option. Please try again.")
+		}
+	}
+}
+
+// loginUser prompts the user for login credentials and authenticates with the server.
+func loginUser(authURL string) bool {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("Enter username: ")
+	username, _ := reader.ReadString('\n')
+	username = strings.TrimSpace(username)
+
+	fmt.Print("Enter password: ")
+	password, _ := reader.ReadString('\n')
+	password = strings.TrimSpace(password)
+
+	payload := map[string]string{
+		"username": username,
+		"password": password,
+	}
+	data, _ := json.Marshal(payload)
+
+	resp, err := http.Post(fmt.Sprintf("%s/login", authURL), "application/json", strings.NewReader(string(data)))
+	if err != nil {
+		fmt.Println("Login failed. Please try again.")
+		return false
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusOK {
+		fmt.Println("Login successful!")
+		return true
+	}
+	fmt.Printf("Login failed with status: %d\n", resp.StatusCode)
+	return false
+}
+
+// registerUser prompts the user for registration details and registers with the server.
+func registerUser(authURL string) bool {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("Enter username: ")
+	username, _ := reader.ReadString('\n')
+	username = strings.TrimSpace(username)
+
+	fmt.Print("Enter password: ")
+	password, _ := reader.ReadString('\n')
+	password = strings.TrimSpace(password)
+
+	payload := map[string]string{
+		"username": username,
+		"password": password,
+	}
+	data, _ := json.Marshal(payload)
+
+	resp, err := http.Post(fmt.Sprintf("%s/register", authURL), "application/json", strings.NewReader(string(data)))
+	if err != nil {
+		fmt.Println("Registration failed. Please try again.")
+		return false
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusCreated {
+		fmt.Println("Registration successful!")
+		return true
+	}
+	fmt.Printf("Registration failed with status: %d\n", resp.StatusCode)
+	return false
 }

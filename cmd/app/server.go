@@ -30,6 +30,8 @@ func main() {
 
 	s := api.Setup(conf)
 
+	http.HandleFunc("/auth/login", api.LoginHandler(s))
+	http.HandleFunc("/auth/register", api.RegisterHandler(s))
 	http.HandleFunc("/ws", api.InitWS(s))
 
 	server := &http.Server{
@@ -50,6 +52,7 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+	defer s.Nats.Close()
 
 	if err := server.Shutdown(ctx); err != nil {
 		log.Fatalf("Server shutdown failed: %v", err)
