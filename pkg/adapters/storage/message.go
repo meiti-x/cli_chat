@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"fmt"
 	"github.com/meiti-x/snapp_task/internal/models"
 	"github.com/meiti-x/snapp_task/internal/repository"
 	"gorm.io/gorm"
@@ -18,7 +17,7 @@ func (r *messageRepository) CreateMessage(message *models.Message) error {
 	return nil
 }
 
-// TODO
+// TODO: Implement the rest of the methods
 func (r *messageRepository) GetUserMessage(message *models.Message, filter models.MessageFilter) (*models.Message, error) {
 	return nil, nil
 }

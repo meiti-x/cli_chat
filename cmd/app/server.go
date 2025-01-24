@@ -17,7 +17,6 @@ import (
 
 // TODO: add documents
 // TODO: add git hook
-// TODO: add more commands(my message)
 // TODO: clear online users in redis on server stop
 func main() {
 	configPath := flag.String("c", "config.yml", "Path to the configuration file")

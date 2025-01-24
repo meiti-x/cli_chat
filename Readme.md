@@ -8,3 +8,5 @@
 7. add rate limmiting for publish message in nats
 8. add custome field and traceid for logger
 9. remove user on redis on interuption or scan all user on login
+10. handle auth for nats
+11. mount log folder
