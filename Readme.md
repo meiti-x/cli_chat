@@ -15,8 +15,16 @@ There are several additional features and improvements that I couldn’t complet
 * Mount the log folder for easier log management.
 * Implement a health check endpoint for the API server.
 * Use Fiber for the API server for better middleware support(add CORS, rate limiting, etc.).
-* and all TODOs in the code.
+* add pre-commit hooks for linting and formatting with golangci-lint.
+* add log rotation for better log management.
+* and all TODOs and FIXME in the code base.
 
 ## How to run the project
+1. go mod tidy
+2. run the server docker compose up --build
+3. go run cmd/app/client.go
 
 ## How run the tests
+the basic tests only wrote for login and register.
+
+docker-compose -f test-docker-compose.yml up --build

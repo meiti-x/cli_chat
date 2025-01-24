@@ -18,6 +18,7 @@ func HandleUsersCommandRedis(ctx context.Context, conn *websocket.Conn, rdb c.Pr
 		return
 	}
 
+	// TODO: create a response pkg
 	response := map[string]interface{}{
 		"event": events.EventUserList,
 		"users": users,

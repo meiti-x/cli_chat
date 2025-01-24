@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"github.com/meiti-x/snapp_task/api"
 	"github.com/meiti-x/snapp_task/config"
+	"github.com/meiti-x/snapp_task/pkg/app_errors"
+	c "github.com/meiti-x/snapp_task/pkg/cache"
 	"log"
 	"net/http"
 	"os"
@@ -15,9 +17,7 @@ import (
 	"time"
 )
 
-// TODO: add documents
-// TODO: add git hook
-// TODO: clear online users in redis on server stop
+// FIXME: clear online users in redis on server stop
 func main() {
 	configPath := flag.String("c", "config.yml", "Path to the configuration file")
 	flag.Parse()
@@ -28,6 +28,12 @@ func main() {
 	}
 
 	s := api.Setup(conf)
+	defer func(Rdb c.Provider) {
+		err := Rdb.CloseConnection()
+		if err != nil {
+			s.Logger.Fatal(c.ErrRedisClose)
+		}
+	}(s.Rdb)
 
 	http.HandleFunc("/auth/login", api.LoginHandler(s))
 	http.HandleFunc("/auth/register", api.RegisterHandler(s))
@@ -36,10 +42,11 @@ func main() {
 	server := &http.Server{
 		Addr: fmt.Sprintf(":%d", conf.Server.Port),
 	}
+
 	go func() {
 		fmt.Printf("Server started at %s:%d\n", conf.Server.Host, conf.Server.Port)
 		if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("Server error: %v", err)
+			s.Logger.Error(app_errors.ErrHttpStart, err)
 		}
 	}()
 

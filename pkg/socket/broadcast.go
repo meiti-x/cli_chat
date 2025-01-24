@@ -9,6 +9,7 @@ import (
 	"log"
 )
 
+// BroadcastRedisUsers sends a message to all online users in the chatroom
 func BroadcastRedisUsers(rdb c.Provider, ws *websocket.Conn, onlineUsersKey string, message map[string]interface{}) error {
 	ctx := context.Background()
 

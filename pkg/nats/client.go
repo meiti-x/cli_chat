@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// MustInitNats creates a new nats connection and panics if it fails
 func MustInitNats(conf *config.Config) (*nats.Conn, error) {
 	nc, err := nats.Connect(conf.Nats.ConnString)
 	if err != nil {

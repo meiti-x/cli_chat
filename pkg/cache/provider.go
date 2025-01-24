@@ -7,11 +7,10 @@ import (
 )
 
 var (
-	ErrCacheMiss             = errors.New("cache miss")
-	ErrRedisClose            = errors.New("failed to close Redis")
-	ErrRedisInit             = errors.New("failed to initialize Redis connection")
-	ErrRedisConnectionFailed = errors.New("failed to connect to Redis")
-	ErrRedisOperationFailed  = errors.New("redis operation failed")
+	ErrCacheMiss            = errors.New("cache miss")
+	ErrRedisClose           = errors.New("failed to close Redis")
+	ErrRedisInit            = errors.New("failed to initialize Redis connection")
+	ErrRedisOperationFailed = errors.New("redis operation failed")
 )
 
 type Provider interface {

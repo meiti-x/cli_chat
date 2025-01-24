@@ -28,6 +28,7 @@ var (
 	ctx      = context.Background() // Context for Redis operations
 )
 
+// TODO: to much coupling here, its better expose to the usecase layer
 func InitWS(s *Server) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -189,6 +190,7 @@ func LoginHandler(s *Server) http.HandlerFunc {
 			return
 		}
 
+		// FIXME: create util pkg for hash and compare password
 		// Compare hashed password
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 			http.Error(w, "Invalid password", http.StatusUnauthorized)

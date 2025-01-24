@@ -11,15 +11,13 @@ var (
 
 // NATS errors
 var (
-	ErrNatsInit               = errors.New("failed to initialize Nats connection")
-	ErrNATSConnectionFailed   = errors.New("failed to connect to NATS server")
-	ErrNATSSubscriptionFailed = errors.New("failed to subscribe to NATS channel")
-	ErrNATSReceivedFailed     = errors.New("error receiving NATS message")
+	ErrNatsInit             = errors.New("failed to initialize Nats connection")
+	ErrNATSConnectionFailed = errors.New("failed to connect to NATS server")
+	ErrNATSReceivedFailed   = errors.New("error receiving NATS message")
 )
 
 // Common errors
 var (
-	InvalidCommand        = errors.New("invalid command received")
 	ErrSendWelcomeMessage = errors.New("error send welcome message")
 	ErrSendJoinMessage    = errors.New("error send join message")
 	ErrSendLeaveMessage   = errors.New("error send leave message")

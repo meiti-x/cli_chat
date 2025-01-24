@@ -30,7 +30,7 @@ func Setup(conf *config.Config) *Server {
 
 	rdb, err := cache.NewRedisCache(conf)
 	if err != nil {
-		lo.DPanic("cant init redis")
+		lo.DPanic(c.ErrRedisInit)
 	}
 
 	db, err := db2.InitDB(conf)
