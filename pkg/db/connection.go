@@ -2,8 +2,8 @@ package db
 
 import (
 	"fmt"
-	"github.com/meiti-x/snapp_task/config"
-	"github.com/meiti-x/snapp_task/internal/models"
+	"github.com/meiti-x/cli_chat/config"
+	"github.com/meiti-x/cli_chat/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"

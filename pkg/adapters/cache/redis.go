@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	"github.com/meiti-x/snapp_task/config"
-	c "github.com/meiti-x/snapp_task/pkg/cache"
+	"github.com/meiti-x/cli_chat/config"
+	c "github.com/meiti-x/cli_chat/pkg/cache"
 	"time"
 )
 

@@ -2,8 +2,8 @@ package storage
 
 import (
 	"fmt"
-	"github.com/meiti-x/snapp_task/internal/models"
-	"github.com/meiti-x/snapp_task/internal/repository"
+	"github.com/meiti-x/cli_chat/internal/models"
+	"github.com/meiti-x/cli_chat/internal/repository"
 	"gorm.io/gorm"
 )
 

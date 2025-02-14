@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/gorilla/websocket"
-	"github.com/meiti-x/snapp_task/pkg/app_errors"
-	c "github.com/meiti-x/snapp_task/pkg/cache"
-	"github.com/meiti-x/snapp_task/pkg/events"
+	"github.com/meiti-x/cli_chat/pkg/app_errors"
+	c "github.com/meiti-x/cli_chat/pkg/cache"
+	"github.com/meiti-x/cli_chat/pkg/events"
 	"log"
 )
 

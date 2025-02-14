@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/meiti-x/snapp_task/internal/models"
+import "github.com/meiti-x/cli_chat/internal/models"
 
 // MessageRepository is an interface for message repository
 type MessageRepository interface {

@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"github.com/meiti-x/snapp_task/internal/models"
+	"github.com/meiti-x/cli_chat/internal/models"
 )
 
 type UserRepository interface {

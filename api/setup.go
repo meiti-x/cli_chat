@@ -1,13 +1,13 @@
 package api
 
 import (
-	"github.com/meiti-x/snapp_task/config"
-	"github.com/meiti-x/snapp_task/pkg/adapters/cache"
-	"github.com/meiti-x/snapp_task/pkg/app_errors"
-	c "github.com/meiti-x/snapp_task/pkg/cache"
-	db2 "github.com/meiti-x/snapp_task/pkg/db"
-	"github.com/meiti-x/snapp_task/pkg/logger"
-	nats2 "github.com/meiti-x/snapp_task/pkg/nats"
+	"github.com/meiti-x/cli_chat/config"
+	"github.com/meiti-x/cli_chat/pkg/adapters/cache"
+	"github.com/meiti-x/cli_chat/pkg/app_errors"
+	c "github.com/meiti-x/cli_chat/pkg/cache"
+	db2 "github.com/meiti-x/cli_chat/pkg/db"
+	"github.com/meiti-x/cli_chat/pkg/logger"
+	nats2 "github.com/meiti-x/cli_chat/pkg/nats"
 	"github.com/nats-io/nats.go"
 	"gorm.io/gorm"
 )

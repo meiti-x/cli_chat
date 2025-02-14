@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	c "github.com/meiti-x/snapp_task/pkg/cache"
+	c "github.com/meiti-x/cli_chat/pkg/cache"
 	"log"
 )
 

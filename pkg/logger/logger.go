@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/meiti-x/snapp_task/config"
+	"github.com/meiti-x/cli_chat/config"
 	"log"
 	"os"
 

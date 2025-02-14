@@ -1,4 +1,4 @@
-module github.com/meiti-x/snapp_task
+module github.com/meiti-x/cli_chat
 
 go 1.23
 
